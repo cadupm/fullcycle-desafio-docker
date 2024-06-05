@@ -9,7 +9,32 @@ const config = {
   database: "nodedb",
 };
 
+const createTable = async () => {
+  const connection = mysql.createConnection(config);
+
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS people (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL
+    )
+  `;
+
+  return new Promise((resolve, reject) => {
+    connection.query(createTableQuery, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  }).finally(() => {
+    connection.end();
+  });
+};
+
 const insertData = async () => {
+  await createTable();
+
   const connection = mysql.createConnection(config);
 
   const insertQuery1 = 'INSERT INTO people(name) VALUES("Cadu")';
